@@ -1,8 +1,8 @@
 #include"Heap.h"
-
 int main()
 {
 	int arr[]= { 27,15,19,18,28,34,65,49,25,37 };
+	HeapSort(arr, sizeof(arr) / sizeof(arr[0]));
 	Heap h1;
 	int nums = sizeof(arr) / sizeof(arr[0]);
 	HeapInit(&h1,arr,nums);
