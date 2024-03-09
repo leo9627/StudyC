@@ -124,13 +124,17 @@ void Test5()
 	{
 		for (int j = 0; j < n; j++)
 		{
-			cout << arr[i][j]<<" ";
+			cout << arr[i][j]<<"\t";
 
 		}
-		cout << "\n";
+		cout << "\n\n";
 	}
-
-
+	for (int i = 0; i < n; i++)
+	{
+		free(arr[i]);
+	}
+	free(arr);
+	arr = NULL;
 }
 void Test6()
 {
@@ -193,7 +197,8 @@ void Test7()
 	{
 		cout << arrA[i] << " ";
 	}
-
+	free(arrA);
+	free(arrB);
 }
 void Test8()
 {
