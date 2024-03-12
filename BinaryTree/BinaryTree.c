@@ -1,5 +1,5 @@
 #include"BinaryTree.h"
-
+#include"Queue.h"
 pBTNode Create(BTDataType x)
 {
 	pBTNode new = (pBTNode)malloc(sizeof(BTNode));
@@ -57,6 +57,7 @@ void InOrder(pBTNode root)
 	printf("%c ", root->_data);
 	InOrder(root->_right);
 }
+
 void PostOrder(pBTNode root)
 {
 	if (root == NULL)
@@ -67,4 +68,66 @@ void PostOrder(pBTNode root)
 	PostOrder(root->_left);
 	PostOrder(root->_right);
 	printf("%c ", root->_data);
+}
+
+int BinaryTreeLevalKSize(pBTNode root, int k)
+{
+	if (root == NULL)
+		return 0;
+	if (k == 1)
+		return 1;
+
+	return BinaryTreeLevalKSize(root->_left, k - 1) + BinaryTreeLevalKSize(root->_right, k - 1);
+}
+
+void LevalOrder(pBTNode root)
+{
+	Queue q1;
+	QueueInit(&q1);
+	if (root == NULL)
+		return;
+	QueuePush(&q1, root);
+	while (!QueueEmpty(&q1))
+	{
+		pBTNode front = QueueFront(&q1);
+		printf("%c ", front->_data);
+		QueuePop(&q1);
+		if (front->_left)
+			QueuePush(&q1, front->_left);
+		if (front->_right)
+			QueuePush(&q1, front->_right);
+	}
+	QueueDestory(&q1);
+}
+bool BinaryTreeComplete(pBTNode root)
+{
+	Queue q1;
+	QueueInit(&q1);
+	if (root == NULL)
+		return true;
+	QueuePush(&q1, root);
+	while (!QueueEmpty(&q1))
+	{
+		pBTNode front = QueueFront(&q1);
+		
+		QueuePop(&q1);
+		if (front == NULL)
+		{
+			break;
+		}
+		QueuePush(&q1,front->_left);
+		QueuePush(&q1,front->_right);
+	}
+	while (!QueueEmpty(&q1))
+	{
+		pBTNode front = QueueFront(&q1);
+		if (front)
+		{
+			QueueDestory(&q1);
+			return false;
+		}
+		QueuePop(&q1);
+	}
+	QueueDestory(&q1);
+	return true;
 }

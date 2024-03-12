@@ -1,6 +1,7 @@
 #pragma once
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 typedef char BTDataType;
 typedef struct BinaryTreeNode
 {
@@ -16,3 +17,6 @@ int BinaryDepth(pBTNode root);
 void PrevOrder(pBTNode root);
 void InOrder(pBTNode root);
 void PostOrder(pBTNode root);
+int BinaryTreeLevalKSize(pBTNode root, int k);
+void LevalOrder(pBTNode root);
+bool BinaryTreeComplete(pBTNode root);

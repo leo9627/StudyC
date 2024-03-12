@@ -48,7 +48,7 @@ void Test31()
 	int n = 0;
 	while (a)
 	{
-		s=s+(int)pow(2*(a % 10), n);
+		s=s+(int)pow(2, n)*(a%10);
 		a = a / 10;
 		n++;
 	}
