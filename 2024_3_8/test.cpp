@@ -88,10 +88,14 @@ void Test5()
 {
 	int n = 0;
 	cin >> n;
+	if (n <= 0)
+		exit(-1);
 	int** arr = (int**)malloc(sizeof(int*) * n);
 	for (int i = 0;i < n; i++)
 	{
 		arr[i] = (int*)malloc(sizeof(int) * n);
+		if (arr[i] == NULL)
+			exit(-1);
 	}
 	int m = (n+1)/2;
 	int k = 1;
