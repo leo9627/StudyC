@@ -6,15 +6,44 @@
 #include<fstream>
 #include"teext.h"
 //using namespace std;
+// 
+#include <iostream>
+using namespace std;
+int size(int k, int m, int n)
+{
+    if (k >= n)
+        return 0;
+    return size(k * m + 1, m, n) + size(k * m + 2, m, n) + size(k * m + 3, m, n) + 1;
+}
 int main()
 {
-	stock mike{ "huawei",20,20,400 };
-	stock lili{ "xiaomi",20,2,40 };
-	stock temp = mike.cmp(lili);
-	temp.show();
-	
-	return 0;
+    int T = 0;
+    cin >> T;
+    while (T)
+    {
+        int n = 0;
+        int m = 0;
+        int k = 0;
+        cin >> n >> m >> k;
+        k -= 1;
+        int ret = size(k, m, n);
+        cout << ret << endl;
+        T--;
+    }
+    return 0;
 }
+//int main()
+//{
+//	stock mike{ "huawei",20,20,400 };
+//	stock lili{ "xiaomi",20,2,40 };
+//	stock temp = mike.cmp(lili);
+//	temp.show();
+//	
+//	return 0;
+//}
+
+
+
 //int main()    //股票交易系统
 //{
 //	using namespace std;

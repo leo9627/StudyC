@@ -35,6 +35,22 @@ void BubbleSortTest()
 	BubbleSort(arr, sizeof(arr) / sizeof(arr[0]));
 	PrintArray(arr, sizeof(arr) / sizeof(arr[0]));
 }
+void QuickSortTest()
+{
+	//int arr[] = { 9,8,7,6,5,4,3,2,1,0 };
+	int arr[] = { 12,22,1,4,3,2,90,100,3,5,2,6,8};
+	PrintArray(arr, sizeof(arr) / sizeof(arr[0]));
+	QuickSortNonR(arr, sizeof(arr) / sizeof(arr[0]));
+	PrintArray(arr, sizeof(arr) / sizeof(arr[0]));
+}
+void MergeSortTest()
+{
+	int arr[] = { 9,8,7,6,5,4,3,2,1,0 };
+	//int arr[] = { 12,22,1,4,3,2,90,100,3,5,2,6,8};
+	PrintArray(arr, sizeof(arr) / sizeof(arr[0]));
+	MergeSortNonR(arr, sizeof(arr) / sizeof(arr[0]));
+	PrintArray(arr, sizeof(arr) / sizeof(arr[0]));
+}
 
 
 int main()
@@ -43,6 +59,10 @@ int main()
 	//ShellSortTest();
 	//SelectSortTest();
 	//HeapSortTest();
-	BubbleSortTest();
+	//BubbleSortTest();
+	//QuickSortTest();
+	//MergeSortTest();
+	//FileMergeSort("1.txt");
+	FileMerge("1.txt", "2.txt", "3.txt");
 	return 0;
 }

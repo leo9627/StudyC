@@ -1,4 +1,5 @@
 #include"Sort.h"
+#include"Stack.h"
 void Swap(int* x, int* y)
 {
 	int temp = *x;
@@ -142,4 +143,249 @@ void BubbleSort(int* arr, int n)
 			break;
 		end--;
 	}
+}
+int MidIndex(int* arr, int begin, int end)
+{
+	int mid = (begin + end) / 2;
+	if (arr[begin] > arr[mid])
+	{
+		if (arr[begin] < arr[end])
+			return begin;
+		if (arr[mid] > arr[end])
+			return mid;
+		return end;
+	}
+	else//arr[begin] <= arr[mid]
+	{
+		if (arr[begin] > arr[end])
+			return begin;
+		if (arr[mid] < arr[end])
+			return mid;
+		return end;
+	}
+}
+int PartSort1(int* arr, int begin, int end)
+{
+	int midIndex = MidIndex(arr, begin, end);
+	Swap(&arr[midIndex], &arr[end]);
+	int keyIndex=end;
+	while (begin < end)
+	{
+		while (begin < end && arr[begin] <= arr[keyIndex])
+			begin++;
+
+		while (begin < end && arr[end] >= arr[keyIndex])
+			end--;
+		Swap(&arr[begin], &arr[end]);
+	}
+	Swap(&arr[begin], &arr[keyIndex]);
+	return begin;
+}
+int PartSort2(int* arr, int begin, int end)
+{
+	int midIndex = MidIndex(arr, begin, end);
+	Swap(&arr[midIndex], &arr[end]);
+	int key = arr[end];
+	while (begin < end)
+	{
+		while (begin < end && arr[begin] <= key)
+			begin++;
+		arr[end] = arr[begin];
+		while (begin < end && arr[end] >= key)
+			end--;
+		arr[begin] = arr[end];
+	}
+	arr[begin] = key;
+	return begin;
+}
+int PartSort3(int* arr, int begin, int end)
+{
+	int cur = begin;
+	int prev = begin-1;
+	int key = arr[end];
+	while (cur <= end)
+	{
+		if (arr[cur] < key && arr[++prev] != arr[cur])
+			Swap(&arr[prev], &arr[cur]);
+		cur++;
+	}
+	Swap(&arr[++prev], &arr[end]);
+	return prev;
+}
+void QuickSort(int* arr, int n)
+{
+	if (n <= 1)
+		return;
+	if (n > 10)
+	{
+		int div = PartSort3(arr, 0, n - 1);
+		QuickSort(arr, div);
+		QuickSort(arr + div + 1, n - 1 - div);
+	}
+	else
+	{
+		ShellSort(arr, n);
+	}
+}
+void QuickSortNonR(int* arr, int n)
+{
+
+	Stack s1;
+	StackInit(&s1);
+	StackPush(&s1,0);
+	StackPush(&s1, n-1);
+	while (!StackEmpty(&s1))
+	{
+		int right = StackTop(&s1);
+		StackPop(&s1);
+		int left = StackTop(&s1);
+		StackPop(&s1);
+		int div=PartSort3(arr, left, right);
+		if (left<div-1)
+		{
+			StackPush(&s1, left);
+			StackPush(&s1, div - 1);
+		}
+		if (div+1<right)
+		{
+			StackPush(&s1, div-1);
+			StackPush(&s1, right);
+		}
+	}
+	StackDestory(&s1);
+}
+void MergeArr(int* arr, int begin1, int end1,int begin2,int end2, int* temp)
+{
+	int left = begin1;
+	int right = end2;
+	int i = left;
+	while (begin1 <= end1 && begin2 <= end2)
+	{
+		if (arr[begin1] < arr[begin2])
+			temp[i++] = arr[begin1++];
+		else
+			temp[i++] = arr[begin2++];
+	}
+	while (begin1 <= end1)
+		temp[i++] = arr[begin1++];
+	while (begin2 <= end2)
+		temp[i++] = arr[begin2++];
+	for (int j = left; j <= right; j++)
+	{
+		arr[j] = temp[j];
+	}
+}
+void _MergeSort(int* arr, int left, int right,int* temp)
+{
+	if (left >= right)
+		return;
+	int mid = (left + right) / 2;
+	_MergeSort(arr, left, mid,temp);
+	_MergeSort(arr, mid + 1, right, temp);
+	MergeArr(arr, left, mid, mid + 1, right, temp);
+}
+void MergeSort(int* arr, int n)
+{
+	int mid = n / 2;
+	int* temp = (int*)malloc(sizeof(int) * n);
+	_MergeSort(arr, 0, n - 1, temp);
+	free(temp);
+}
+void MergeSortNonR(int* arr, int n)
+{
+	int* temp = (int*)malloc(sizeof(int) * n);
+	int gap = 1;
+	while (gap <n)
+	{
+
+		for (int i = 0; i < n; i=i+2*gap)
+		{
+			int begin1 = i;
+			int end1 = i + gap - 1;
+			int begin2 = i + gap;
+			int end2 = i + 2 * gap - 1;
+			if (begin2 >= n)
+				break;
+			if (end2 >= n)
+				end2 = n - 1;
+			MergeArr(arr, begin1,end1,begin2,end2,temp);
+		}
+		PrintArray(arr, n);
+		gap *= 2;
+	}
+	free(temp);
+}
+
+void FileMerge(const char* file1, const char* file2,const char* file3)
+{
+	FILE* F1 = fopen(file1, "r");
+	FILE* F2 = fopen(file2, "r");
+	FILE* Fout = fopen(file3, "w");
+	int n1 = 0;
+	int n2 = 0;
+	while (fscanf(F1, "%d", &n1) != EOF && fscanf(F2, "%d", &n2) != EOF)
+	{
+		if (n1 < n2)
+		{
+			fprintf(Fout, "%d\n", n1);
+			fseek(F2, -1, SEEK_CUR);
+		}
+		else
+		{
+			fprintf(Fout, "%d\n", n2);
+			fseek(F1, -1, SEEK_CUR);
+		}
+	}
+	fseek(F1, -1, SEEK_CUR);
+	while (fscanf(F1, "%d", &n1) != EOF)
+	{
+		fprintf(Fout, "%d\n", n1);
+	}
+	fseek(F1, -1, SEEK_CUR);
+	while (fscanf(F2, "%d", &n2) != EOF)
+	{
+		fprintf(Fout, "%d\n", n2);
+	}
+	fclose(F1);
+	fclose(F2);
+	fclose(Fout);
+}
+void FileMergeSort(const char* file)
+{
+	FILE* fin = fopen(file, "r");
+	char filename[20];
+	int num = 0;
+	int arr[10];
+	int i = 0;
+	int n = 0;
+	while (1)
+	{
+		if (i < 10)
+		{
+			if (fscanf(fin, "%d", &num) != EOF)
+				arr[i++] = num;
+			else
+				break;
+		}
+		else
+		{
+			sprintf(filename, "sub\\%d.txt", n);
+			n++;
+			FILE* fout = fopen(filename, "w");
+			for (int j = 0; j < 10; j++)
+			{
+				QuickSort(arr, 10);
+				fprintf(fout, "%d\n", arr[j]);
+			}
+			i = 0;
+		}
+	}
+	sprintf(filename, "sub\\%d.txt", n);
+	FILE* fout = fopen(filename, "w");
+	for (int j = 0; j < i; j++)
+	{
+		QuickSort(arr, i);
+		fprintf(fout, "%d\n", arr[j]);
+	}
+	fclose(fout);
 }
