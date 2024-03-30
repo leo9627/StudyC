@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 
 void Swap(int* x, int* y);
@@ -20,3 +21,4 @@ void QuickSortNonR(int* arr, int n);
 void MergeSort(int* arr, int n);
 void MergeSortNonR(int* arr, int n);
 void FileMergeSort(const char* file);
+void CountSort(int* a, int n);

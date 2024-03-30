@@ -316,35 +316,37 @@ void MergeSortNonR(int* arr, int n)
 	free(temp);
 }
 
-void FileMerge(const char* file1, const char* file2,const char* file3)
+void TwoFileMerge(const char* file1, const char* file2,const char* file3)
 {
 	FILE* F1 = fopen(file1, "r");
 	FILE* F2 = fopen(file2, "r");
 	FILE* Fout = fopen(file3, "w");
 	int n1 = 0;
 	int n2 = 0;
-	while (fscanf(F1, "%d", &n1) != EOF && fscanf(F2, "%d", &n2) != EOF)
+	int ret1 = fscanf(F1, "%d", &n1) ;
+	int ret2 = fscanf(F2, "%d", &n2);
+	while (ret1!= EOF && ret2!= EOF)
 	{
 		if (n1 < n2)
 		{
 			fprintf(Fout, "%d\n", n1);
-			fseek(F2, -1, SEEK_CUR);
+			ret1 = fscanf(F1, "%d", &n1);
 		}
 		else
 		{
 			fprintf(Fout, "%d\n", n2);
-			fseek(F1, -1, SEEK_CUR);
+			ret2 = fscanf(F2, "%d", &n2);
 		}
 	}
-	fseek(F1, -1, SEEK_CUR);
-	while (fscanf(F1, "%d", &n1) != EOF)
+	while (ret1 != EOF)
 	{
 		fprintf(Fout, "%d\n", n1);
+		ret1 = fscanf(F1, "%d", &n1);
 	}
-	fseek(F1, -1, SEEK_CUR);
-	while (fscanf(F2, "%d", &n2) != EOF)
+	while (ret2 != EOF)
 	{
 		fprintf(Fout, "%d\n", n2);
+		ret2 = fscanf(F1, "%d", &n2);
 	}
 	fclose(F1);
 	fclose(F2);
@@ -355,12 +357,12 @@ void FileMergeSort(const char* file)
 	FILE* fin = fopen(file, "r");
 	char filename[20];
 	int num = 0;
-	int arr[10];
+	int arr[20];
 	int i = 0;
 	int n = 0;
 	while (1)
 	{
-		if (i < 10)
+		if (i < 20)
 		{
 			if (fscanf(fin, "%d", &num) != EOF)
 				arr[i++] = num;
@@ -372,20 +374,77 @@ void FileMergeSort(const char* file)
 			sprintf(filename, "sub\\%d.txt", n);
 			n++;
 			FILE* fout = fopen(filename, "w");
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < 20; j++)
 			{
-				QuickSort(arr, 10);
+				QuickSort(arr, 20);
 				fprintf(fout, "%d\n", arr[j]);
 			}
+			fclose(fout);
 			i = 0;
 		}
 	}
-	sprintf(filename, "sub\\%d.txt", n);
-	FILE* fout = fopen(filename, "w");
-	for (int j = 0; j < i; j++)
+	n--;
+	if (i > 0)
 	{
-		QuickSort(arr, i);
-		fprintf(fout, "%d\n", arr[j]);
+		n++;
+		sprintf(filename, "sub\\%d.txt", n);
+		FILE* fout = fopen(filename, "w");
+		for (int j = 0; j < i; j++)
+		{
+			QuickSort(arr, i);
+			fprintf(fout, "%d\n", arr[j]);
+		}
+		fclose(fout);
 	}
-	fclose(fout);
+
+	char c1[] = "sub\\";
+	char mFile[100] = "0";
+	char meFile[100] = "";
+	char file1[100]="sub\\0.txt";
+	char file2[100];
+	for (int j = 1; j <= n; j++)
+	{
+		char temp[100];
+		sprintf(temp, "%s", mFile);
+		sprintf(mFile, "%s%d", temp,j);
+		sprintf(meFile, "%s%s.txt", c1,mFile );
+		sprintf(file2, "sub\\%d.txt", j);
+		TwoFileMerge(file1, file2, meFile);
+		strncpy(file1, meFile,sizeof(char)*100);
+	}
+}
+void CountSort(int* a, int n)
+{
+	assert(a);
+	assert(n);
+	int min = a[0];
+	int max = a[0];
+	for (int i = 0; i < n; i++)
+	{
+		if (a[i] > max)
+			max = a[i];
+		if (a[i] < min)
+			min = a[i];
+	}
+	int range = max - min + 1;
+	int* coutArr = (int*)malloc(sizeof(int) * range);
+	if (coutArr == NULL)
+	{
+		perror("malloc");
+		exit(-1);
+	}
+	memset(coutArr, 0, sizeof(int)*range);
+	for (int i = 0; i < n; i++)
+	{
+		coutArr[a[i] - min]++;
+	}
+	int index = 0;
+	for (int i = 0; i < range; i++)
+	{
+		while (coutArr[i]--)
+		{
+			a[index++] = i + min;
+		}
+	}
+	free(coutArr);
 }
